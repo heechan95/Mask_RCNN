@@ -102,27 +102,12 @@ attribute_df["id"] = attribute_df["id"].astype(int)
 attribute_df["level"] = attribute_df["level"].astype(int)
 
 
-# In[ ]:
-
-
 print("Category Labels")
 #category_df
 
 
-# In[ ]:
-
-
 print("Attribute Labels")
 #attribute_df
-
-
-# In[ ]:
-
-
-#sample_rle_encoding=train_df['EncodedPixels'][0]
-
-
-# In[ ]:
 
 
 counter_category = Counter()
@@ -133,9 +118,6 @@ for class_id in train_df["ClassId"]:
     counter_attribute.update(attribute)
 
 
-# In[ ]:
-
-
 category_name_dict = {}
 for i in label_description["categories"]:
     category_name_dict[str(i["id"])] = i["name"]
@@ -144,20 +126,14 @@ for i in label_description["attributes"]:
     attribute_name_dict[str(i["id"])] = i["name"]
 
 
-# In[ ]:
-
 
 ROOT_DIR="fashion/mrcnn"
 DATA_DIR="advanced_ML/data"
 
 
-# In[ ]:
-
 
 sys.path.append(os.path.join(ROOT_DIR, 'Mask_RCNN'))
 
-
-# In[ ]:
 
 
 from mrcnn.config import Config
@@ -166,8 +142,6 @@ import mrcnn.model as modellib
 from mrcnn import visualize
 from mrcnn.model import log
 
-
-# In[ ]:
 
 
 class FashionDataset(utils.Dataset):
@@ -252,8 +226,6 @@ class FashionDataset(utils.Dataset):
         return mask
 
 
-# In[ ]:
-
 
 image_ids_list = list(set(train_df['ImageId']))
 
@@ -269,15 +241,10 @@ train_ids = train_ids[:100]
 val_ids = val_ids[:100]
 
 
-# In[ ]:
-
 
 #fashion_dataset = FashionDataset()
 #fashion_dataset.load_fashion(num_data=100)
 #fashion_dataset.prepare()
-
-
-# In[ ]:
 
 
 fashion_dataset_train = FashionDataset()
@@ -286,23 +253,17 @@ fashion_dataset_val = FashionDataset()
 fashion_dataset_val.load_fashion(val_ids)
 
 
-# In[ ]:
-
 
 fashion_dataset_train.prepare()
 fashion_dataset_val.prepare()
 
 print("dataset prepared")
-# In[ ]:
-
 
 #print("Image Count: {}".format(len(fashion_dataset.image_ids)))
 #print("Class Count: {}".format(fashion_dataset.num_classes))
 #for i, info in enumerate(fashion_dataset.class_info):
 #    print("{:3}. {:50}".format(i, info['name']))
 
-
-# In[ ]:
 
 
 # Load and display random samples
@@ -312,8 +273,6 @@ print("dataset prepared")
 #    mask, class_ids = fashion_dataset.load_mask(image_id)
 #    visualize.display_top_masks(image, mask, class_ids, fashion_dataset.class_names)
 
-
-# In[ ]:
 
 
 # Load random image and mask.
@@ -331,9 +290,6 @@ print("dataset prepared")
 #log("bbox", bbox)
 # Display image and instances
 #visualize.display_instances(image, bbox, mask, class_ids, fashion_dataset.class_names)
-
-
-# In[ ]:
 
 
 # Run-length encoding stolen from https://www.kaggle.com/rakhlin/fast-run-length-encoding-python
@@ -368,9 +324,6 @@ r=rle_encoding(m)
 '''
 
 
-# In[ ]:
-
-
 class FashionConfig(Config):
 
     NAME = "fashion"
@@ -388,32 +341,13 @@ config = FashionConfig()
 #config.display()
 
 
-# In[ ]
-
 
 model = modellib.MaskRCNN(mode="training", config=config,
                                   model_dir=ROOT_DIR)
 
 
-# In[ ]:
 
 
-#model.log_dir
-
-
-# In[ ]:
-
-
-'''
-if args.model.lower() == "last":
-        # Find last trained weights
-        model_path = model.find_last()
-elif args.model.lower() == "imagenet":
-        # Start from ImageNet trained weights
-        model_path = model.get_imagenet_weights()
-else:
-        model_path = args.model
-'''
 WEIGHT_PATH = 'last'
 '''
 if WEIGHT_PATH == "last":
@@ -427,13 +361,11 @@ else:
         #model_path = args.model
 
 '''
-# In[ ]:
+
 
 model_path='fashion/mrcnn/pre-trained/mask_rcnn_fashion_0105.h5'
 model.load_weights(model_path, by_name=True)
 
-
-# In[ ]:
 
 
 epochs_stage1_1=110
@@ -487,7 +419,7 @@ model.train(fashion_dataset_train, fashion_dataset_val,
 
 
 print("Training Finished")
-# In[ ]:
+
 '''
 
 class InferenceConfig(FashionConfig):
@@ -497,9 +429,6 @@ class InferenceConfig(FashionConfig):
     
 inference_config = InferenceConfig()
 inference_config.display()
-
-
-# In[ ]:
 
 
 # Recreate the model in inference mode
@@ -515,28 +444,17 @@ print("Loading weights from ", model_path)
 model.load_weights(model_path, by_name=True)
 
 
-# In[ ]:
-
 
 image_ids = train_ids[0]
 image=fashion_dataset_train.load_image(0)
 
 
-# In[ ]:
-
-
 result = model.detect([image])
-
-
-# In[ ]:
 
 
 r = result[0]
 visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'], 
                             fashion_dataset_train.class_names)
-
-
-# In[ ]:
 
 
 def get_test_filepaths(input_dir):
@@ -545,28 +463,4 @@ def get_test_filepaths(input_dir):
 
 test_input_dir=os.path.join(DATA_DIR, 'test')
 test_fps=get_test_filepaths(test_input_dir)
-
-
-# In[ ]:
-
-
-tf.__version__
-
-
-# In[ ]:
-
-
-sys
-
-
-# In[ ]:
-
-
-sys.path
-
-
-# In[ ]:
-
-
-sys.executable
 '''
